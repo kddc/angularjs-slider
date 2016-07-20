@@ -1,7 +1,7 @@
 /*! angularjs-slider - v5.4.1 - 
  (c) Rafal Zajac <rzajac@gmail.com>, Valentin Hervieu <valentin@hervieu.me>, Jussi Saarivirta <jusasi@gmail.com>, Angelin Sirbu <angelin.sirbu@gmail.com> - 
  https://github.com/angular-slider/angularjs-slider - 
- 2016-07-17 */
+ 2016-07-20 */
 /*jslint unparam: true */
 /*global angular: false, console: false, define, module */
 (function(root, factory) {
@@ -1573,6 +1573,32 @@
             this.maxH.on('focus', angular.bind(this, this.onPointerFocus, this.maxH, 'highValue'));
           }
         }
+
+        // kddc
+        if(this.isTouchDevice()) {
+          this.hammerMinH = new Hammer(this.minH[0]);
+          this.hammerMaxH = new Hammer(this.maxH[0]);
+          this.hammerFullBar = new Hammer(this.fullBar[0]);
+          this.hammerSelBar = new Hammer(this.selBar[0]);
+
+          this.minH.off('touchstart');
+          this.maxH.off('touchstart');
+          this.fullBar.off('touchstart');
+          this.selBar.off('touchstart');
+          this.ticks.off('touchstart');
+
+          this.hammerMinH.on('pan', function(e) {
+            if(!this.started && Math.abs(e.deltaX) >= 20) {
+              angular.bind(this, this.onStart, this.minH, 'lowValue')(e.srcEvent);
+            }
+            if(Math.abs(e.deltaY) >= 50) {
+              $document.off("touchmove");
+              this.hammerMinH.stop();
+            }
+          }.bind(this));
+        }
+        // kddc
+
       },
 
       /**
@@ -1597,6 +1623,9 @@
        * @returns {undefined}
        */
       onStart: function(pointer, ref, event) {
+        // kddc
+        this.started = true
+        // kddc
         var ehMove, ehEnd,
           eventNames = this.getEventNames(event);
 
@@ -1671,7 +1700,9 @@
           this.tracking = '';
         }
         this.dragging.active = false;
-
+        // kddc
+        this.started = false
+        // kddc
         $document.off(moveEventName, ehMove);
         this.callOnEnd();
       },
@@ -2100,7 +2131,30 @@
           });
         }
         this.scope.$emit('slideEnded');
+      },
+
+      // kddc
+      isTouchDevice: function() {
+        var deviceAgent = navigator.userAgent.toLowerCase();
+
+        var isTouchDevice = ('ontouchstart' in document.documentElement) ||
+        (deviceAgent.match(/(iphone|ipod|ipad)/) ||
+        deviceAgent.match(/(android)/)  ||
+        deviceAgent.match(/(iemobile)/) ||
+        deviceAgent.match(/iphone/i) ||
+        deviceAgent.match(/ipad/i) ||
+        deviceAgent.match(/ipod/i) ||
+        deviceAgent.match(/blackberry/i) ||
+        deviceAgent.match(/bada/i));
+
+        if(isTouchDevice) {
+          return true;
+        } else {
+          return false;
+        }
       }
+      // kddc
+      
     };
 
     return Slider;
