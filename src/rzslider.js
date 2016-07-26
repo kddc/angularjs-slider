@@ -1602,7 +1602,7 @@
           }.bind(this));
           this.hammerMaxH.on('pan', function(e) {
             if(!this.started && Math.abs(e.deltaX) >= 10) {
-              angular.bind(this, this.onStart, this.maxH, 'lowValue')(e.srcEvent);
+              angular.bind(this, this.onStart, this.maxH, 'highValue')(e.srcEvent);
             }
             if(Math.abs(e.deltaY) >= 75) {
               $document.off("touchmove");
