@@ -1,7 +1,7 @@
 /*! angularjs-slider - v5.4.1 - 
  (c) Rafal Zajac <rzajac@gmail.com>, Valentin Hervieu <valentin@hervieu.me>, Jussi Saarivirta <jusasi@gmail.com>, Angelin Sirbu <angelin.sirbu@gmail.com> - 
  https://github.com/angular-slider/angularjs-slider - 
- 2016-07-20 */
+ 2016-07-26 */
 /*jslint unparam: true */
 /*global angular: false, console: false, define, module */
 (function(root, factory) {
@@ -1575,7 +1575,7 @@
         }
 
         // kddc
-        if(this.isTouchDevice()) {
+        if(this.isTouchDevice() && Hammer !== undefined) {
           this.hammerMinH = new Hammer(this.minH[0]);
           this.hammerMaxH = new Hammer(this.maxH[0]);
           this.hammerFullBar = new Hammer(this.fullBar[0]);
@@ -1588,12 +1588,21 @@
           this.ticks.off('touchstart');
 
           this.hammerMinH.on('pan', function(e) {
-            if(!this.started && Math.abs(e.deltaX) >= 20) {
+            if(!this.started && Math.abs(e.deltaX) >= 10) {
               angular.bind(this, this.onStart, this.minH, 'lowValue')(e.srcEvent);
             }
-            if(Math.abs(e.deltaY) >= 50) {
+            if(Math.abs(e.deltaY) >= 75) {
               $document.off("touchmove");
               this.hammerMinH.stop();
+            }
+          }.bind(this));
+          this.hammerMaxH.on('pan', function(e) {
+            if(!this.started && Math.abs(e.deltaX) >= 10) {
+              angular.bind(this, this.onStart, this.maxH, 'highValue')(e.srcEvent);
+            }
+            if(Math.abs(e.deltaY) >= 75) {
+              $document.off("touchmove");
+              this.hammerMaxH.stop();
             }
           }.bind(this));
         }
@@ -2154,7 +2163,7 @@
         }
       }
       // kddc
-      
+
     };
 
     return Slider;
