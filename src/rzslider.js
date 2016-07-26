@@ -1592,12 +1592,21 @@
           this.ticks.off('touchstart');
 
           this.hammerMinH.on('pan', function(e) {
-            if(!this.started && Math.abs(e.deltaX) >= 20) {
+            if(!this.started && Math.abs(e.deltaX) >= 10) {
               angular.bind(this, this.onStart, this.minH, 'lowValue')(e.srcEvent);
             }
-            if(Math.abs(e.deltaY) >= 50) {
+            if(Math.abs(e.deltaY) >= 75) {
               $document.off("touchmove");
               this.hammerMinH.stop();
+            }
+          }.bind(this));
+          this.hammerMaxH.on('pan', function(e) {
+            if(!this.started && Math.abs(e.deltaX) >= 10) {
+              angular.bind(this, this.onStart, this.maxH, 'lowValue')(e.srcEvent);
+            }
+            if(Math.abs(e.deltaY) >= 75) {
+              $document.off("touchmove");
+              this.hammerMaxH.stop();
             }
           }.bind(this));
         }
