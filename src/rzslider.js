@@ -1579,7 +1579,7 @@
         }
 
         // kddc
-        if(this.isTouchDevice()) {
+        if(this.isTouchDevice() && Hammer !== undefined) {
           this.hammerMinH = new Hammer(this.minH[0]);
           this.hammerMaxH = new Hammer(this.maxH[0]);
           this.hammerFullBar = new Hammer(this.fullBar[0]);
@@ -2158,7 +2158,7 @@
         }
       }
       // kddc
-      
+
     };
 
     return Slider;
